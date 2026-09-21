@@ -37,10 +37,19 @@
   .route{font-size:18px;font-weight:650;margin:0 0 6px}
   .route.more{color:var(--accent)} .route.just-try{color:var(--pass)} .route.run{color:var(--ink)}
   .because{color:var(--dim);margin:0;font-size:15px}
-  .sig{display:grid;grid-template-columns:150px 1fr 46px;gap:10px;align-items:center;margin-top:10px;
-    font-size:13px;font-family:var(--mono)}
-  .bar{height:6px;background:#22262a;border-radius:3px;overflow:hidden}
-  .bar i{display:block;height:100%;background:var(--accent)}
+  .map{display:grid;gap:0;margin-top:14px;border-top:1px solid var(--line)}
+  .area{display:grid;grid-template-columns:16px 150px 1fr;gap:12px;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--line)}
+  .area .mark{font-family:var(--mono);font-size:13px;line-height:1.4}
+  .area.covered .mark{color:var(--pass)}
+  .area.thin .mark{color:var(--accent)}
+  .area.missing .mark{color:var(--block)}
+  .area .name{font-size:14px;font-weight:600}
+  .area .say{font-size:13.5px;color:var(--dim)}
+  .area.covered .say{font-style:italic}
+  .caveat{margin-top:12px;font-size:12.5px;color:var(--dim);border-left:2px solid var(--line);
+    padding-left:10px}
+  .tally{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
   .lens{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:9px 0;
     border-bottom:1px solid var(--line);font-size:14px}
   .lens:last-child{border-bottom:0}
@@ -89,13 +98,13 @@
 
     <textarea id="text" placeholder="We are about to sign for 40 licences at CHF 28 a seat, going live on 1 December. The pilot had 12 people and they said it saved about two hours a week…"></textarea>
     <div class="row">
-      <button class="go" id="btn-screen">Is this worth a review?</button>
+      <button class="go" id="btn-screen">Am I ready to run this?</button>
       <button class="ghost" id="btn-run">Run the four lenses</button>
       <span class="count" id="count">0 characters</span>
     </div>
 
     <div id="gate" class="card hidden">
-      <h2>Intake gate <span class="pill" id="gate-src"></span></h2>
+      <h2>Are you ready to run? <span class="pill" id="gate-src"></span></h2>
       <p class="route" id="gate-route"></p>
       <p class="because" id="gate-because"></p>
       <div id="gate-signals"></div>
@@ -131,10 +140,6 @@ const LENS_LABEL = {
   outcome: 'Outcome &amp; premise', lifecycle: 'Lifecycle &amp; mechanism',
   authority: 'Authority &amp; boundary', evidence: 'Evidence validity',
 };
-const SIGNAL_LABEL = {
-  understandable: 'understandable', isDecision: 'a real decision',
-  reversibility: 'hard to undo', evidence: 'evidence behind it', stakes: 'size of the bet',
-};
 let poll = null;
 
 $('text').addEventListener('input', () => {
@@ -160,19 +165,28 @@ $('btn-screen').onclick = async () => {
     $('gate').classList.remove('hidden');
     $('gate-route').className = 'route ' + r.route;
     $('gate-route').textContent =
-      r.route === 'more' ? 'Not enough to judge yet'
+      r.route === 'more' ? 'Not enough on the page yet'
       : r.route === 'just-try' ? 'Just try it — this does not need a review'
-      : 'Worth four separate passes';
+      : 'Ready for the four reviewers';
     $('gate-because').textContent = r.because;
     const src = $('gate-src');
     src.textContent = r.mock ? 'MOCK — no Jev key, numbers are fake' : 'Jev · ' + r.model;
     src.className = 'pill' + (r.mock ? ' warn' : '');
-    $('gate-signals').innerHTML = Object.entries(r.signals).map(([k, v]) => {
-      const pct = Math.round((k === 'understandable' || k === 'isDecision' ? v : v / 4) * 100);
-      return '<div class="sig"><span>' + SIGNAL_LABEL[k] + '</span>' +
-             '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
-             '<span>' + pct + '%</span></div>';
-    }).join('');
+    const MARK = { covered: '●', thin: '◑', missing: '○' };
+    const SAID = { covered: '', thin: '', missing: '' };
+    const t = r.tally || { covered: 0, total: 0 };
+    $('gate-signals').innerHTML =
+      '<p class="caveat" style="border:0;padding:0;margin:14px 0 0">' + t.covered + ' of ' + t.total +
+      ' areas answered</p>' +
+      '<div class="map">' + (r.areas || []).map((x) =>
+        '<div class="area ' + x.state + '"><span class="mark">' + MARK[x.state] + '</span>' +
+        '<span class="name">' + escapeHtml(x.label) + '</span>' +
+        '<span class="say">' + escapeHtml(x.fix || SAID[x.state]) + '</span></div>').join('') +
+      '</div>' +
+      '<p class="caveat">This measures how much you have written down, not how good the idea is. ' +
+      'A strong idea described in two sentences looks exactly like a weak one here. ' +
+      'The four reviewers judge the idea; this only stops you paying for a run that would ' +
+      'come back asking questions.</p>';
   } finally { $('btn-screen').disabled = false; }
 };
 
