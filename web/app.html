@@ -100,6 +100,7 @@
     <div class="row">
       <button class="go" id="btn-screen">Am I ready to run this?</button>
       <button class="ghost" id="btn-run">Run the four lenses</button>
+      <button class="ghost" id="btn-example">Load an example</button>
       <span class="count" id="count">0 characters</span>
     </div>
 
@@ -145,6 +146,32 @@ let poll = null;
 $('text').addEventListener('input', () => {
   $('count').textContent = $('text').value.length.toLocaleString() + ' characters';
 });
+
+// A worked example, so the first thing a visitor sees is what a filled-in case looks like -
+// six areas answered, one of them deliberately thin, which is the normal state of a real one.
+const EXAMPLE = [
+  'I want to sign a 24-month contract for a scheduling tool for my cleaning company: 18 seats,',
+  'CHF 34 per seat per month, starting 1 November. That is CHF 14,688 over the term and there',
+  'is no exit before month 24.',
+  '',
+  'The people with the problem are my 14 cleaners and 2 dispatchers, at 6am, when a job gets',
+  'moved and nobody finds out until they are already at the wrong address. Today the dispatcher',
+  'phones or sends a WhatsApp to a group of 16, and roughly twice a week somebody misses it.',
+  'Two cleaners quit last year and both named the chaos in their exit conversation.',
+  '',
+  'I counted 11 wrong-address trips in August from the route sheets. At CHF 40 a trip in wages',
+  'and fuel that is CHF 440 in one month. The vendor demoed it to me and two dispatchers, and',
+  'both said they would use it. No cleaner has seen it yet.',
+  '',
+  'I pay. There is no pricing to customers involved, this is an internal cost.',
+  'I would find out whether it works by watching the August number for three months.',
+].join('\n');
+
+$('btn-example').onclick = () => {
+  $('text').value = EXAMPLE;
+  $('text').dispatchEvent(new Event('input'));
+  $('text').scrollTop = 0;
+};
 
 $('tab-check').onclick = () => switchTab('check');
 $('tab-ledger').onclick = () => switchTab('ledger');
