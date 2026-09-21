@@ -9,14 +9,29 @@ frozen_commit: ""             # filled by the runner: git hash of the commit con
 author: ""                    # who wrote this case (the conflicted party — name them)
 date: ""                      # when the case was written
 
+# The decision itself. Fill this for ANY commitment, not only a product idea: a spend, a hire,
+# a migration, a contract, a launch. Three planted-flaw cases in 2026-09 were non-product
+# decisions and all four reviewers independently said so and judged them as irreversibility
+# questions instead — the frame reaches further than this file used to let it.
+decision:
+  on_the_table: ""            # the exact thing you would commit to, one sentence, with the number
+  commits: ""                 # money, time, headcount, term — what leaves your hands
+  reversibility: ""           # what undoing it costs, and when the last cheap exit is
+  deadline: ""                # what forces the timing, and WHO set that deadline
+  who_decides: ""             # who signs; and who is affected but is not being asked
+
 customer: ""                  # who has the problem (specific person/segment, not "everyone")
 moment: ""                    # the concrete trigger moment the problem occurs in
 claimed_problem: ""           # what the customer cannot do / suffers, in their words if possible
 proposed_outcome: ""          # what the product would make true for them
-business_claim: ""            # why money flows: who pays, for what, roughly how much, how often
-viral_claim: ""               # (optional) why it spreads without paid acquisition; "" if none
+business_claim: ""            # why money flows: who pays, for what, roughly how much, how often.
+                              # For an internal decision: what it saves or protects, and how that
+                              # turns into cash or into risk you no longer carry.
+viral_claim: ""               # (optional, product cases) why it spreads without paid acquisition
 current_alternatives: []      # what the customer does TODAY in that moment (incl. "nothing")
-critical_unknowns: []         # the author's own list of what they don't know yet
+critical_unknowns: []         # the author's own list of what they don't know yet. Anything the
+                              # intake gate marked thin or missing belongs here, named, rather
+                              # than quietly left out — a reviewer cannot flag a gap you hid.
 
 # Evidence pack. Every item follows evidence-rules.md. Reviewers judge ONLY what is in here.
 evidence:

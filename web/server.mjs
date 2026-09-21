@@ -143,7 +143,17 @@ const server = createServer(async (req, res) => {
       const id = randomUUID().slice(0, 8);
       const job = { id, stage: 'intake', lenses: Object.fromEntries(LENSES.map((k) => [k, 'waiting'])), started: Date.now() };
       jobs.set(id, job);
-      intake(text.slice(0, MAX_CHARS), { model: MODEL })
+      // Gate first, then translate. Not to block the run - the person asked for it - but so the
+      // areas the gate found thin arrive in the case as named unknowns instead of being lost.
+      screen(text.slice(0, MAX_CHARS))
+        .then((g) => {
+          job.gate = g;
+          return (g.areas || [])
+            .filter((a) => a.state !== 'covered')
+            .map((a) => `${a.label} (${a.state} in the submitted text): ${a.fix}`);
+        })
+        .catch(() => [])
+        .then((gaps) => intake(text.slice(0, MAX_CHARS), { model: MODEL, gaps }))
         .then(({ file, caseId, yaml }) => {
           job.caseFile = file;
           job.caseId = caseId;
@@ -160,8 +170,8 @@ const server = createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname.startsWith('/api/run/')) {
       const job = jobs.get(url.pathname.split('/').pop());
       if (!job) return json(res, 404, { error: 'unknown job' });
-      const { id, stage, lenses, verdict, synthesis, reports, yaml, error, caseId, started } = job;
-      return json(res, 200, { id, stage, lenses, verdict, synthesis, reports, yaml, error, caseId, seconds: Math.round((Date.now() - started) / 1000) });
+      const { id, stage, lenses, verdict, synthesis, reports, yaml, error, caseId, started, gate } = job;
+      return json(res, 200, { id, stage, lenses, verdict, synthesis, reports, yaml, error, caseId, gate, seconds: Math.round((Date.now() - started) / 1000) });
     }
 
     res.writeHead(404).end('not found');

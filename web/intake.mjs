@@ -21,6 +21,9 @@ Output ONLY a YAML document. No commentary, no code fence.
 Rules you may not break:
 1. Never add a fact the author did not state. If a field has no support in their text, leave it
    empty ("") and add the missing thing to critical_unknowns instead.
+1b. Some unknowns are handed to you already, under KNOWN GAPS at the end of the input. Copy every
+   one of them into critical_unknowns, in the author's subject matter, before adding your own.
+   A gap that was spotted at the door and then dropped here is a gap nobody will ever flag.
 2. Every evidence item is the author's own account until proven otherwise: collected_by is the
    author, and limit says what that item does NOT establish.
 3. Do not soften and do not sharpen. If they wrote "everyone wants this", the evidence item is
@@ -34,6 +37,12 @@ case_id: WEB-<slug>
 version: v1.0
 author: "web submission"
 date: "<today>"
+decision:
+  on_the_table: ""
+  commits: ""
+  reversibility: ""
+  deadline: ""
+  who_decides: ""
 customer: ""
 moment: ""
 claimed_problem: ""
@@ -49,14 +58,18 @@ evidence:
     source: ""
     collected_by: ""
     n: ""
-    limit: ""
-decision_on_the_table: ""
-reversibility: ""`;
+    limit: ""`;
 
-export async function intake(text, { model = 'sonnet' } = {}) {
+export async function intake(text, { model = 'sonnet', gaps = [] } = {}) {
   const today = new Date().toISOString().slice(0, 10);
   const slug = createHash('sha256').update(text).digest('hex').slice(0, 8);
-  const yaml = (await runIsolated(SYSTEM.replace('<today>', today), text, { model }))
+  // The gate already knows which areas the text leaves thin. Handing them over here is the only
+  // thing that stops a gap found at the door from vanishing before the reviewers ever see it.
+  const withGaps = gaps.length
+    ? `${text}\n\nKNOWN GAPS (spotted before this run, copy each into critical_unknowns):\n` +
+      gaps.map((g) => `- ${g}`).join('\n')
+    : text;
+  const yaml = (await runIsolated(SYSTEM.replace('<today>', today), withGaps, { model }))
     .replace(/^```[a-z]*\n?/i, '')
     .replace(/```\s*$/, '')
     .trim();
