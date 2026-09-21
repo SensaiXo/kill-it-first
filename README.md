@@ -7,9 +7,9 @@
 **Feed it a business idea. It tries to kill the idea before reality does — and shows you
 exactly why, with every claim traced to evidence. Free, open-source idea due diligence
 for founders and indie hackers: frozen case, four lenses, one verdict, cheapest next test.
-It works on any consequential decision, not only new ideas: a spend, a fix, a launch, a
-strategy shift. (On plain code diffs a normal review does better — see the evidence
-summary; this engine earns its keep where claims carry the weight.)**
+It works on any consequential business decision, not only new ideas: a spend, a hire, a
+launch, a strategy shift. It does not review code, and it is not trying to — that is a
+different problem with better tools already pointed at it.**
 
 Most ideas die after months of building, when the market finally delivers the verdict.
 This engine delivers a verdict in an afternoon, from four independent AI reviewers who
@@ -55,10 +55,11 @@ is what it saves you.
 There is no guarantee, and anyone selling you one is doing the thing this engine exists to
 catch. What exists is a track record, in three tiers of strength:
 
-**Tier 1 — benchmarked, adjacent domain.** The four-lens blind-review method was tested on
-5 real commits against a normal code review (same frozen input, reviewers blind). On
-claims-heavy documents it found up to 14 issues where the normal review found 1, and it
-*lost* on plain mechanical code — evidence the wins aren't noise.
+**Tier 1 — where the method came from.** The four-lens blind-review method was first tested on
+5 real commits against a normal review (same frozen input, reviewers blind). On claims-heavy
+documents it found up to 14 issues where the normal review found 1, and it *lost* on plain
+mechanical code. That loss is why this project only points at business decisions: the method
+earns its keep where claims carry the weight, not where syntax does.
 
 **Tier 2 — backtests, this domain.** The engine was run on 4 real past decisions of one Swiss
 solo consultancy whose outcomes were already known (three failures, one decision that held),
