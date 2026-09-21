@@ -171,6 +171,6 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Problem Due-Diligence  http://127.0.0.1:${PORT}`);
+  console.log(`Kill It First  http://127.0.0.1:${PORT}`);
   console.log(`model ${MODEL} · intake gate ${jevConfigured() ? 'Jev (live)' : 'Jev (MOCK - no TYPESAFE_API_KEY)'}`);
 });

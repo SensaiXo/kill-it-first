@@ -1,19 +1,21 @@
-# Problem Due-Diligence Engine
+# Kill It First
 
 ![Four blind reviewers, one verdict](docs/img/hero-placeholder.png)
 
 <!-- placeholder: labels still describe code review; final image uses the four lens names below -->
 
-**Feed it a business idea. It tries to kill the idea before reality does — and shows you
-exactly why, with every claim traced to evidence. Free, open-source idea due diligence
-for founders and indie hackers: frozen case, four lenses, one verdict, cheapest next test.
-It works on any consequential business decision, not only new ideas: a spend, a hire, a
-launch, a strategy shift. It does not review code, and it is not trying to — that is a
-different problem with better tools already pointed at it.**
+**Four reviewers take your idea apart, separately, and none of them is trying to be kind.
+They read only the evidence you can actually show, they never see each other's notes, and
+what comes back is a verdict with every claim traced to a line you wrote. Free and
+open source. It works on any consequential business decision, not only new ideas: a spend,
+a hire, a launch, a strategy shift. It does not review code, and it is not trying to —
+that is a different problem with better tools already pointed at it.**
 
 Most ideas die after months of building, when the market finally delivers the verdict.
-This engine delivers a verdict in an afternoon, from four independent AI reviewers who
-never talk to each other, judging only the evidence you can actually show.
+Kill it first: get the verdict in an afternoon, while it still costs you an afternoon.
+
+It will not be nice about it. It will also not invent a flaw to look clever — a finding
+that cannot be traced to your own evidence gets rejected in writing, where you can see it.
 
 There is nothing to install: this repo is a set of instruction files you paste into an AI
 assistant (Claude, ChatGPT, or a developer tool like Claude Code), plus the rules that keep

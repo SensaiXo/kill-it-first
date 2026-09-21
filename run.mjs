@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Problem Due-Diligence runner.
+// Kill It First runner.
 // Spawns the four blind reviewers as four SEPARATE headless Claude processes, each with:
 //   - no tools (cannot read files, browse, or run anything)
 //   - no project/user settings, no CLAUDE.md, no MCP servers, no hooks (settings off), no session memory
@@ -135,7 +135,7 @@ function render(final = false) {
 }
 
 // ---- run ------------------------------------------------------------------------------
-console.log(`${BOLD}Problem Due-Diligence run${RESET}  case ${caseId} ${version}  frozen@${commit}  model ${model}`);
+console.log(`${BOLD}Kill It First run${RESET}  case ${caseId} ${version}  frozen@${commit}  model ${model}`);
 console.log(`${DIM}4 blind reviewers, 4 separate processes, empty sandbox ${sandbox}${RESET}\n`);
 console.log('\n'.repeat(REVIEWERS.length - 1));
 const ticker = setInterval(render, 90);
