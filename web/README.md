@@ -13,9 +13,13 @@ that is here. Run it on your own machine with your own key and the plan never le
 
 ## What happens to a submission
 
-1. **Intake gate** (`screen.mjs`) — five typed questions to Jev, one routing decision:
-   *not enough to judge*, *just try it, it is reversible and cheap*, or *worth four passes*.
-   No grade, no 0-100 number. A made-up number is exactly the thing this project does not do.
+1. **Intake gate** (`screen.mjs`) — a readiness map, not a grade. Jev marks each of the six areas
+   the reviewers actually read (who exactly, proof it is real, who pays, how they hear, what they
+   do today, what it costs you) as covered, thin or missing, each gap carrying the one sentence
+   that closes it, and routes the submission to *not enough on the page yet*, *just try it, you
+   can undo this*, or *ready for the four reviewers*. It measures how much has been written down,
+   never how good the idea is, and the page says so. No composite number anywhere: a made-up
+   score is exactly the thing this project exists to refuse.
 2. **Translation** (`intake.mjs`) — the free text becomes a case file with the fields the four
    reviewers read. It may rephrase and sort; it may not invent. Anything the author did not say
    becomes a `critical_unknown`, and every evidence item keeps the author as `collected_by`,
