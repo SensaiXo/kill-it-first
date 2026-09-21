@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Problem Due-Diligence</title>
+<style>
+  :root{
+    --paper:#111213; --panel:#17191b; --line:#292d31; --ink:#e8e6e3; --dim:#9aa0a6;
+    --accent:#c9a227; --block:#d3543f; --pass:#5b9a6f; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:16px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:40px 20px 96px}
+  header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:28px}
+  h1{font-size:20px;margin:0;letter-spacing:-.01em}
+  h1 span{color:var(--dim);font-weight:400}
+  .tabs{display:flex;gap:4px}
+  .tab{background:none;border:1px solid transparent;color:var(--dim);padding:5px 12px;border-radius:6px;
+    font:inherit;font-size:13px;cursor:pointer}
+  .tab[aria-selected=true]{color:var(--ink);border-color:var(--line);background:var(--panel)}
+  p.lede{color:var(--dim);margin:0 0 22px;font-size:15px;max-width:60ch}
+  textarea{width:100%;min-height:210px;background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    border-radius:10px;padding:16px;font:14px/1.6 var(--mono);resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  button.go{background:var(--ink);color:#111;border:0;border-radius:8px;padding:10px 18px;font:inherit;
+    font-weight:600;cursor:pointer}
+  button.go:disabled{opacity:.45;cursor:default}
+  button.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;
+    padding:10px 16px;font:inherit;cursor:pointer}
+  .count{color:var(--dim);font-size:12px;font-family:var(--mono);margin-left:auto}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:20px}
+  .card h2{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 0 12px;font-weight:600}
+  .route{font-size:18px;font-weight:650;margin:0 0 6px}
+  .route.more{color:var(--accent)} .route.just-try{color:var(--pass)} .route.run{color:var(--ink)}
+  .because{color:var(--dim);margin:0;font-size:15px}
+  .sig{display:grid;grid-template-columns:150px 1fr 46px;gap:10px;align-items:center;margin-top:10px;
+    font-size:13px;font-family:var(--mono)}
+  .bar{height:6px;background:#22262a;border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent)}
+  .lens{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:9px 0;
+    border-bottom:1px solid var(--line);font-size:14px}
+  .lens:last-child{border-bottom:0}
+  .dot{width:9px;height:9px;border-radius:50%;background:#3a3f44;margin-left:6px}
+  .dot.thinking{background:var(--accent);animation:pulse 1.1s infinite}
+  .dot.done{background:var(--pass)} .dot.failed{background:var(--block)}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+  .status{color:var(--dim);font-family:var(--mono);font-size:12px}
+  .verdict{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:.04em;margin:0 0 4px}
+  .verdict.KILL{color:var(--block)} .verdict.HOLD{color:var(--accent)}
+  .verdict.VALIDATE,.verdict.ADVANCE{color:var(--pass)}
+  .report{white-space:pre-wrap;font:13px/1.65 var(--mono);color:#d5d2ce;margin:0;overflow-x:auto}
+  details{margin-top:10px} summary{cursor:pointer;color:var(--dim);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+  td.w{font-family:var(--mono);font-weight:600}
+  .w-KILL{color:var(--block)} .w-HOLD{color:var(--accent)}
+  .w-VALIDATE,.w-ADVANCE{color:var(--pass)}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 10px;
+    font-size:11px;font-family:var(--mono);color:var(--dim)}
+  .pill.warn{border-color:var(--accent);color:var(--accent)}
+  .tally{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  footer{margin-top:40px;color:var(--dim);font-size:12.5px;line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+  .hidden{display:none}
+  @media(prefers-color-scheme:light){
+    :root{--paper:#faf9f7;--panel:#fff;--line:#e3e0da;--ink:#16181a;--dim:#6c7076;--accent:#8a6d1f}
+    button.go{background:#16181a;color:#fff}
+    .bar{background:#eceae6} .report{color:#2a2d30} .dot{background:#d3d0ca}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Problem Due-Diligence <span>— four blind readers, one decision</span></h1>
+    <div class="tabs">
+      <button class="tab" id="tab-check" aria-selected="true">Check</button>
+      <button class="tab" id="tab-ledger" aria-selected="false">Ledger</button>
+    </div>
+  </header>
+
+  <section id="view-check">
+    <p class="lede">Describe a decision you are about to take: what you would do, for whom, what it costs,
+      and what you already know. Four reviewers read it separately, without seeing each other's notes.</p>
+
+    <textarea id="text" placeholder="We are about to sign for 40 licences at CHF 28 a seat, going live on 1 December. The pilot had 12 people and they said it saved about two hours a week…"></textarea>
+    <div class="row">
+      <button class="go" id="btn-screen">Is this worth a review?</button>
+      <button class="ghost" id="btn-run">Run the four lenses</button>
+      <span class="count" id="count">0 characters</span>
+    </div>
+
+    <div id="gate" class="card hidden">
+      <h2>Intake gate <span class="pill" id="gate-src"></span></h2>
+      <p class="route" id="gate-route"></p>
+      <p class="because" id="gate-because"></p>
+      <div id="gate-signals"></div>
+    </div>
+
+    <div id="run" class="card hidden">
+      <h2>Run <span class="pill" id="run-stage"></span></h2>
+      <div id="lenses"></div>
+    </div>
+
+    <div id="result" class="card hidden">
+      <h2>Verdict</h2>
+      <p class="verdict" id="verdict"></p>
+      <pre class="report" id="synthesis"></pre>
+      <div id="lens-reports"></div>
+    </div>
+  </section>
+
+  <section id="view-ledger" class="hidden">
+    <p class="lede">Every run ever recorded, verdict written before reality answered. The word on the right
+      is what the engine said, not what happened.</p>
+    <div class="tally" id="tally"></div>
+    <table><thead><tr><th>Date</th><th>Case</th><th>Verdict</th><th>Note</th></tr></thead>
+      <tbody id="ledger-rows"></tbody></table>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const LENS_LABEL = {
+  outcome: 'Outcome &amp; premise', lifecycle: 'Lifecycle &amp; mechanism',
+  authority: 'Authority &amp; boundary', evidence: 'Evidence validity',
+};
+const SIGNAL_LABEL = {
+  understandable: 'understandable', isDecision: 'a real decision',
+  reversibility: 'hard to undo', evidence: 'evidence behind it', stakes: 'size of the bet',
+};
+let poll = null;
+
+$('text').addEventListener('input', () => {
+  $('count').textContent = $('text').value.length.toLocaleString() + ' characters';
+});
+
+$('tab-check').onclick = () => switchTab('check');
+$('tab-ledger').onclick = () => switchTab('ledger');
+function switchTab(which) {
+  $('tab-check').setAttribute('aria-selected', which === 'check');
+  $('tab-ledger').setAttribute('aria-selected', which === 'ledger');
+  $('view-check').classList.toggle('hidden', which !== 'check');
+  $('view-ledger').classList.toggle('hidden', which === 'check');
+}
+
+// ---- intake gate ----------------------------------------------------------------------
+$('btn-screen').onclick = async () => {
+  const text = $('text').value;
+  $('btn-screen').disabled = true;
+  try {
+    const r = await post('/api/screen', { text });
+    if (r.error) return alert(r.error);
+    $('gate').classList.remove('hidden');
+    $('gate-route').className = 'route ' + r.route;
+    $('gate-route').textContent =
+      r.route === 'more' ? 'Not enough to judge yet'
+      : r.route === 'just-try' ? 'Just try it — this does not need a review'
+      : 'Worth four separate passes';
+    $('gate-because').textContent = r.because;
+    const src = $('gate-src');
+    src.textContent = r.mock ? 'MOCK — no Jev key, numbers are fake' : 'Jev · ' + r.model;
+    src.className = 'pill' + (r.mock ? ' warn' : '');
+    $('gate-signals').innerHTML = Object.entries(r.signals).map(([k, v]) => {
+      const pct = Math.round((k === 'understandable' || k === 'isDecision' ? v : v / 4) * 100);
+      return '<div class="sig"><span>' + SIGNAL_LABEL[k] + '</span>' +
+             '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
+             '<span>' + pct + '%</span></div>';
+    }).join('');
+  } finally { $('btn-screen').disabled = false; }
+};
+
+// ---- full run -------------------------------------------------------------------------
+$('btn-run').onclick = async () => {
+  const text = $('text').value;
+  $('btn-run').disabled = true;
+  $('result').classList.add('hidden');
+  const r = await post('/api/run', { text });
+  if (r.error) { $('btn-run').disabled = false; return alert(r.error); }
+  $('run').classList.remove('hidden');
+  drawLenses({ outcome: 'waiting', lifecycle: 'waiting', authority: 'waiting', evidence: 'waiting' }, 'intake');
+  clearInterval(poll);
+  poll = setInterval(() => tick(r.id), 1200);
+};
+
+async function tick(id) {
+  const j = await (await fetch('/api/run/' + id)).json();
+  drawLenses(j.lenses || {}, j.stage, j.seconds);
+  if (j.stage === 'done') {
+    clearInterval(poll);
+    $('btn-run').disabled = false;
+    $('result').classList.remove('hidden');
+    $('verdict').className = 'verdict ' + j.verdict;
+    $('verdict').textContent = j.verdict;
+    $('synthesis').textContent = j.synthesis;
+    $('lens-reports').innerHTML = Object.entries(j.reports || {}).map(([k, v]) =>
+      '<details><summary>' + LENS_LABEL[k] + ' — full report</summary><pre class="report">' +
+      escapeHtml(v) + '</pre></details>').join('') +
+      '<details><summary>The case file the reviewers actually read</summary><pre class="report">' +
+      escapeHtml(j.yaml || '') + '</pre></details>';
+  }
+  if (j.stage === 'failed') {
+    clearInterval(poll);
+    $('btn-run').disabled = false;
+    $('run-stage').textContent = 'failed: ' + (j.error || '').slice(0, 200);
+  }
+}
+
+function drawLenses(lenses, stage, seconds) {
+  $('run-stage').textContent = stage + (seconds ? ' · ' + seconds + 's' : '');
+  $('lenses').innerHTML = Object.keys(LENS_LABEL).map((k) => {
+    const st = lenses[k] || 'waiting';
+    return '<div class="lens"><span class="dot ' + st + '"></span><span>' + LENS_LABEL[k] +
+           '</span><span class="status">' + st + '</span></div>';
+  }).join('');
+}
+
+// ---- ledger ---------------------------------------------------------------------------
+async function loadState() {
+  const s = await (await fetch('/api/state')).json();
+  $('tally').innerHTML = Object.entries(s.ledger.counts)
+    .map(([w, n]) => '<span class="pill">' + w + ' ' + n + '</span>')
+    .join('') + '<span class="pill">' + s.ledger.total + ' runs recorded</span>';
+  $('ledger-rows').innerHTML = s.ledger.rows.length
+    ? s.ledger.rows.slice().reverse().map((r) =>
+        '<tr><td>' + r.date + '</td><td>' + escapeHtml(r.case) + '</td><td class="w w-' + r.word + '">' +
+        r.word + '</td><td>' + escapeHtml(r.note || '') + '</td></tr>').join('')
+    : '<tr><td colspan="4" style="color:var(--dim);padding:18px 8px">' +
+      'Your ledger is empty. It fills up as you run cases — one line each, written before ' +
+      'reality answers. A verdict you never wrote down is a verdict you can rewrite.</td></tr>';
+  $('foot').innerHTML =
+    'Model <b>' + s.model + '</b> · intake gate <b>' + (s.jev === 'live' ? 'Jev, live' : 'Jev, mock') + '</b>. ' +
+    (s.jev === 'live' ? '' : 'Set <b>TYPESAFE_API_KEY</b> in your environment to switch the intake gate from mock numbers to Jev. ') +
+    'This is a risk review, not advice, and it reads only what you paste. ' +
+    'It has never been shown to find more than one careful reader would: across four side-by-side tests ' +
+    'a single pass matched it every time. What it does instead is say the same thing twice, ' +
+    'reject its own weak findings in writing, and leave a record you can check.';
+}
+
+const post = (u, b) => fetch(u, { method: 'POST', headers: { 'content-type': 'application/json' },
+  body: JSON.stringify(b) }).then((r) => r.json());
+const escapeHtml = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+loadState();
+</script>
+</body>
+</html>

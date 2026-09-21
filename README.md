@@ -111,6 +111,22 @@ for `RUNS.md`. Blindness here is a process boundary, not a promise in the prompt
 check it: `node test/blindness.mjs` plants a secret next to a reviewer process and tries to make
 it leak tools, files, project instructions or other reports. It must come back empty.
 
+**With a text box instead of a YAML file:**
+
+```
+node web/server.mjs        # http://127.0.0.1:5317
+```
+
+Paste a decision in plain prose. A five-question intake gate decides whether the case is even
+worth four reviewers, a translation step turns your text into a case file you can read and
+correct before the run, and the page shows each lens as it finishes. The second tab is your
+ledger. It binds to localhost only, and it stores nothing anywhere else. Details and the
+`TYPESAFE_API_KEY` for the gate: [web/README.md](web/README.md) — without a key the gate runs
+on obvious fake numbers and says so.
+
+There is no hosted version and there will not be one from us. Bring your own key, run it on your
+own machine, and your plan never leaves it.
+
 **Manual (any assistant):**
 
 You need nothing installed — just an AI assistant where you can open separate fresh chats
